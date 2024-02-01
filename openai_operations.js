@@ -52,7 +52,7 @@ export class OpenAIOperations {
         } catch (error) {
             // Handle any errors that may occur
             console.error(error);
-            return "Sorry, something went wrong. Please try again later.";
+            return "Sorry, Bakaq ran out of money bakabo3Sad";
         }
     }
 
@@ -80,7 +80,7 @@ export class OpenAIOperations {
         } catch (error) {
             // Handle any errors that may occur
             console.error(error);
-            return "Sorry, something went wrong. Please try again later.";
+            return "Sorry, Bakaq ran out of money bakabo3Sad";
         }
     }
 }
