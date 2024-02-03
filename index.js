@@ -123,8 +123,7 @@ bot.connect(
 bot.onMessage(async (channel, user, message, self) => {
     if (self) return;
 
-    if (ENABLE_CHANNEL_POINTS) {
-        console.log("ENABLE_CHANNEL_POINTS:",ENABLE_CHANNEL_POINTS);
+    if (ENABLE_CHANNEL_POINTS==="true") {
         console.log(`The message id is ${user["msg-id"]}`);
         if (user["msg-id"] === "highlighted-message") {
             console.log(`The message is ${message}`);
@@ -135,11 +134,11 @@ bot.onMessage(async (channel, user, message, self) => {
     // check if message is a command started with !COMMAND_NAME (e.g. !gpt) in lower-cased
     if (message.toLowerCase().startsWith(COMMAND_NAME)) {
         let text = message.slice(COMMAND_NAME.length);
-          
+        console.log("text by user:",text);  
         if (!text) {
             // If there's no text after the command, don't proceed with the OpenAI call or response.
             console.log("Command received without any message. No action taken.");
-            console.log("text by user:",text);
+           
             return;
         }
 
