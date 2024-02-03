@@ -134,6 +134,12 @@ bot.onMessage(async (channel, user, message, self) => {
     // check if message is a command started with !COMMAND_NAME (e.g. !gpt) in lower-cased
     if (message.toLowerCase().startsWith(COMMAND_NAME)) {
         let text = message.slice(COMMAND_NAME.length);
+          
+        if (!text) {
+            // If there's no text after the command, don't proceed with the OpenAI call or response.
+            console.log("Command received without any message. No action taken.");
+            return;
+        }
 
         if (SEND_USERNAME) {
             text = "Message from user " + user.username + ": " + text
