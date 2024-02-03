@@ -133,6 +133,7 @@ bot.onMessage(async (channel, user, message, self) => {
     }
     // check if message is a command started with !COMMAND_NAME (e.g. !gpt) in lower-cased
     if (message.toLowerCase().startsWith(COMMAND_NAME)) {
+        console.log("message by user:" + message);  
         let text = message.slice(COMMAND_NAME.length);
         console.log("text by user:" + text +"-");  
         if (!text) {
