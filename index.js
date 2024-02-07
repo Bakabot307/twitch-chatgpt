@@ -1,8 +1,6 @@
 import express from 'express';
 import fs from 'fs';
 import ws from 'ws';
-import axios from 'axios';
-
 import expressWs from 'express-ws';
 
 import {job} from './keep_alive.js';
@@ -306,17 +304,17 @@ function notifyFileChange() {
 
 
 // Function to calculate headshot rate
+// Function to calculate headshot rate
 function calculateHeadshotRate(shots) {
   const totalShots = shots.head + shots.body + shots.leg;
   const headshotRate = (shots.head / totalShots) * 100;
-  return headshotRate.toFixed(2) + '%';
+  return headshotRate.toFixed(2);
 }
 
-// Function to fetch Valorant summary data
-async function getValorantSummary() {
-  try {
-    const response = await axios.get('https://api.henrikdev.xyz/valorant/v1/by-puuid/lifetime/matches/ap/1c663650-bf7e-562a-bf99-b486461227b7?mode=competitive&page=1&size=10');
-    const data = response.data;
+// Make a GET request to the API
+fetch('https://api.henrikdev.xyz/valorant/v1/by-puuid/lifetime/matches/ap/1c663650-bf7e-562a-bf99-b486461227b7?mode=competitive&page=1&size=10')
+  .then(response => response.json())
+  .then(data => {
     const playerName = `${data.name}#${data.tag}`;
     const matches = data.data.map(match => {
       const headshotRate = calculateHeadshotRate(match.stats.shots);
@@ -329,19 +327,20 @@ async function getValorantSummary() {
         match.stats.kills,
         match.stats.deaths,
         match.stats.assists,
-        headshotRate,
+        headshotRate + '%',
         match.stats.damage.made,
         match.stats.damage.received,
         won ? 'Yes' : 'No'
       ].join(',');
     });
-    const header = "Player: " + playerName + "\nmap,team,score,kills,deaths,assists,headshotRate,damageMade,damageReceived,won";
-    const formattedData = [header, ...matches].join('\n');
-    return formattedData;
-  } catch (error) {
+
+    console.log("Player:", playerName);
+    console.log("map,team,score,kills,deaths,assists,headshotRate,damageMade,damageReceived,won");
+    matches.forEach(match => console.log(match));
+  })
+  .catch(error => {
     console.error('Error fetching data:', error);
-    return 'Error fetching Valorant summary data.';
-  }
-}
+  });
+
 
 
