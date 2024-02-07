@@ -195,7 +195,7 @@ async function handleVsummaryCommand(channel, user) {
 
         let text;
         if (SEND_USERNAME) {
-            text = "Message from user " + user.username + " asking for  bakabot's valorant summary : " + summary
+            text = "this is the summary of the last 10 games of bakabot:" + summary
         }
         console.log(text);
         const response = await openai_ops_valorant.make_openai_call(text);
@@ -348,13 +348,17 @@ async function fetchData() {
       const totalScore = match.stats.score;
       const totalRoundsPlayed = match.teams.red + match.teams.blue;
       const avgScorePerRound = totalScore / totalRoundsPlayed;
+      
+      // Calculate K/D/A ratio
+      const kills = match.stats.kills;
+      const deaths = match.stats.deaths;
+      const assists = match.stats.assists;
+      const kdaRatio = `${kills}/${deaths}/${assists}`; // Format as K/D/A
+
       return [
         match.meta.map.name,
-        match.stats.team,
         avgScorePerRound.toFixed(2), // Round to 2 decimal places
-        match.stats.kills,
-        match.stats.deaths,
-        match.stats.assists,
+        kdaRatio, // Replace individual K/D/A with combined K/D/A ratio
         headshotRate + '%',
         match.stats.damage.made,
         match.stats.damage.received,
@@ -362,7 +366,7 @@ async function fetchData() {
       ].join(',');
     });
 
-    const resultString = `Player: ${playerName}-Rank: ${data2}\nmap,team,AverageScorePerRound,kills,deaths,assists,headshotRate,damageMade,damageReceived,won\n${matches.join('\n')}`;
+    const resultString = `Player: ${playerName}-Rank: ${data2}\nmap,AverageScorePerRound,K/D/A,headshotRate,damageMade,damageReceived,won\n${matches.join('\n')}`;
     
     return resultString;
   } catch (error) {
@@ -370,6 +374,7 @@ async function fetchData() {
     return 'Error fetching data';
   }
 }
+
 
 
 
