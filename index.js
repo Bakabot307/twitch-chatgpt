@@ -336,10 +336,6 @@ async function fetchData() {
         won ? 'Yes' : 'No'
       ].join(',');
     });
-
-    console.log("Player:", playerName);
-    console.log("map,team,score,kills,deaths,assists,headshotRate,damageMade,damageReceived,won");
-    matches.forEach(match => console.log(match));
   } catch (error) {
     console.error('Error fetching data:', error);
   }
