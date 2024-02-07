@@ -7,6 +7,7 @@ import {job} from './keep_alive.js';
 
 import {OpenAIOperations} from './openai_operations.js';
 import {TwitchBot} from './twitch_bot.js';
+import { make_openai_call } from "./openai_operations_valorant.js";
 
 // start keep alive cron job
 job.start();
@@ -94,7 +95,7 @@ const bot = new TwitchBot(TWITCH_USER, TWITCH_AUTH, channels, OPENAI_API_KEY, EN
 file_context = fs.readFileSync("./file_context.txt", 'utf8');
 file_context_valorant = fs.readFileSync("./file_context_valorant.txt", 'utf8');
 const openai_ops = new OpenAIOperations(file_context, OPENAI_API_KEY, MODEL_NAME, HISTORY_LENGTH);
-const openai_ops_valorant = new OpenAIOperations(file_context_valorant, OPENAI_API_KEY, MODEL_NAME, 0);
+
 
 // setup twitch bot callbacks
 bot.onConnected((addr, port) => {
@@ -198,7 +199,7 @@ async function handleVsummaryCommand(channel, user) {
             text = "this is the summary of the last 10 games of " + summary
         }
         console.log(text);
-        const response = await openai_ops_valorant.make_openai_call(text);
+        const response = await make_openai_call(file_context_valorant, text, MODEL_NAME);
 
         // Split response if it exceeds twitch chat message length limit
         // Send multiples messages with a delay in between
