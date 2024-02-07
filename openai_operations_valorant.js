@@ -3,7 +3,7 @@ import OpenAI from "openai";
 let messages = [];
 
 const openai = new OpenAI({
-    apiKey: 'your_openai_key',
+    apiKey: process.env.OPENAI_API_KEY,
 });
 
 async function make_openai_call(file_context, text, model_name) {
