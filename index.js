@@ -1,6 +1,7 @@
 import express from 'express';
 import fs from 'fs';
 import ws from 'ws';
+const axios = require('axios');
 
 import expressWs from 'express-ws';
 
@@ -302,8 +303,7 @@ function notifyFileChange() {
         }
     });
 }
-// Function to calculate headshot rate
-const axios = require('axios');
+
 
 // Function to calculate headshot rate
 function calculateHeadshotRate(shots) {
