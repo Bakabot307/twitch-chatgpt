@@ -326,7 +326,7 @@ async function fetchData() {
     const data = await response.json();
 
     const response2 = await fetch('https://api.kyroskoh.xyz/valorant/v1/mmr/ap/bakabot/7117?show=combo&display=0');
-    const data2 = await response2.data; // Assuming the response is already in string format
+    const data2 = await response2.text(); // Assuming the response is already in string format
 
     const playerName = `${data.name}`;
     const matches = data.data.map(match => {
