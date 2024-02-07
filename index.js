@@ -345,10 +345,13 @@ async function fetchData() {
       const headshotRate = calculateHeadshotRate(match.stats.shots);
       const won = (match.stats.team === 'Blue' && match.teams.blue > match.teams.red) ||
                   (match.stats.team === 'Red' && match.teams.red > match.teams.blue);
+      const totalScore = match.stats.score;
+      const totalRoundsPlayed = match.teams.red + match.teams.blue;
+      const avgScorePerRound = totalScore / totalRoundsPlayed;
       return [
         match.meta.map.name,
         match.stats.team,
-        match.stats.score,
+        avgScorePerRound.toFixed(2), // Round to 2 decimal places
         match.stats.kills,
         match.stats.deaths,
         match.stats.assists,
@@ -359,7 +362,7 @@ async function fetchData() {
       ].join(',');
     });
 
-    const resultString = `Player: ${playerName}-Rank: ${data2}\nmap,team,score,kills,deaths,assists,headshotRate,damageMade,damageReceived,won\n${matches.join('\n')}`;
+    const resultString = `Player: ${playerName}-Rank: ${data2}\nmap,team,AverageScorePerRound,kills,deaths,assists,headshotRate,damageMade,damageReceived,won\n${matches.join('\n')}`;
     
     return resultString;
   } catch (error) {
