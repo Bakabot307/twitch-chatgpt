@@ -81,6 +81,7 @@ if (!ENABLE_CHANNEL_POINTS) {
 // init global variables
 const MAX_LENGTH = 399
 let file_context = "You are a helpful Twitch Chatbot."
+let file_context_valorant = "You are a helpful Twitch Chatbot."
 let last_user_message = ""
 
 // setup twitch bot
@@ -92,7 +93,9 @@ const bot = new TwitchBot(TWITCH_USER, TWITCH_AUTH, channels, OPENAI_API_KEY, EN
 
 // setup openai operations
 file_context = fs.readFileSync("./file_context.txt", 'utf8');
+file_context_valorant = fs.readFileSync("./file_context_valorant.txt", 'utf8');
 const openai_ops = new OpenAIOperations(file_context, OPENAI_API_KEY, MODEL_NAME, HISTORY_LENGTH);
+const openai_ops_valorant = new OpenAIOperations(file_context_valorant, OPENAI_API_KEY, MODEL_NAME, HISTORY_LENGTH);
 
 // setup twitch bot callbacks
 bot.onConnected((addr, port) => {
@@ -172,6 +175,27 @@ bot.onMessage(async (channel, user, message, self) => {
             }
         }
     }
+
+    if (message.toLowerCase() === '!vsummary') {
+    // Fetch Valorant summary data openai_ops_valorant
+    const summary = await getValorantSummary();
+    let text;
+        if (SEND_USERNAME) {
+            text = "Message from user " + user.username + " asking for valorant summary from bakabot: " + summary
+        }
+       const response = await openai_ops_valorant.make_openai_call(text);
+
+        // split response if it exceeds twitch chat message length limit
+        // send multiples messages with a delay in between
+        if (response.length > MAX_LENGTH) {
+            const messages = response.match(new RegExp(`.{1,${MAX_LENGTH}}`, "g"));
+            messages.forEach((message, index) => {
+                setTimeout(() => {
+                    bot.say(channel, message);
+                }, 1000 * index);
+            });
+        }
+  }
 });
 
 app.ws('/check-for-updates', (ws, req) => {
@@ -278,3 +302,46 @@ function notifyFileChange() {
         }
     });
 }
+// Function to calculate headshot rate
+const axios = require('axios');
+
+// Function to calculate headshot rate
+function calculateHeadshotRate(shots) {
+  const totalShots = shots.head + shots.body + shots.leg;
+  const headshotRate = (shots.head / totalShots) * 100;
+  return headshotRate.toFixed(2) + '%';
+}
+
+// Function to fetch Valorant summary data
+async function getValorantSummary() {
+  try {
+    const response = await axios.get('https://api.henrikdev.xyz/valorant/v1/by-puuid/lifetime/matches/ap/1c663650-bf7e-562a-bf99-b486461227b7?mode=competitive&page=1&size=10');
+    const data = response.data;
+    const playerName = `${data.name}#${data.tag}`;
+    const matches = data.data.map(match => {
+      const headshotRate = calculateHeadshotRate(match.stats.shots);
+      const won = (match.stats.team === 'Blue' && match.teams.blue > match.teams.red) ||
+                  (match.stats.team === 'Red' && match.teams.red > match.teams.blue);
+      return [
+        match.meta.map.name,
+        match.stats.team,
+        match.stats.score,
+        match.stats.kills,
+        match.stats.deaths,
+        match.stats.assists,
+        headshotRate,
+        match.stats.damage.made,
+        match.stats.damage.received,
+        won ? 'Yes' : 'No'
+      ].join(',');
+    });
+    const header = "Player: " + playerName + "\nmap,team,score,kills,deaths,assists,headshotRate,damageMade,damageReceived,won";
+    const formattedData = [header, ...matches].join('\n');
+    return formattedData;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return 'Error fetching Valorant summary data.';
+  }
+}
+
+
