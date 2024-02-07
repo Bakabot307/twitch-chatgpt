@@ -124,7 +124,6 @@ bot.connect(
 
 bot.onMessage(async (channel, user, message, self) => {
     if (self) return;
-
     if (ENABLE_CHANNEL_POINTS==="true") {
         console.log(`The message id is ${user["msg-id"]}`);
         if (user["msg-id"] === "highlighted-message") {
@@ -143,14 +142,11 @@ bot.onMessage(async (channel, user, message, self) => {
            
             return;
         }
-
         if (SEND_USERNAME) {
             text = "Message from user " + user.username + ": " + text
         }
-
         // make openai call
         const response = await openai_ops.make_openai_call(text);
-
         // split response if it exceeds twitch chat message length limit
         // send multiples messages with a delay in between
         if (response.length > MAX_LENGTH) {
@@ -174,27 +170,18 @@ bot.onMessage(async (channel, user, message, self) => {
             }
         }
     }
-
     if (message.toLowerCase() === '!vsummary') {
     // Fetch Valorant summary data openai_ops_valorant
-      handleVsummaryCommand(channel, user);
-  }
-});
-
-async function handleVsummaryCommand(channel, user) {
-    try {
-        // Fetch Valorant summary data
-        const summary = await fetchData();
+    const summary = await fetchData();
         
-        let text;
+    let text;
         if (SEND_USERNAME) {
             text = "Message from user " + user.username + " asking for valorant summary from bakabot: " + summary
         }
-        console.log(text);
-        const response = await openai_ops_valorant.make_openai_call(text);
-
-        // Split response if it exceeds twitch chat message length limit
-        // Send multiples messages with a delay in between
+        console.log(text)
+       const response = await openai_ops_valorant.make_openai_call(text);
+        // split response if it exceeds twitch chat message length limit
+        // send multiples messages with a delay in between
         if (response.length > MAX_LENGTH) {
             const messages = response.match(new RegExp(`.{1,${MAX_LENGTH}}`, "g"));
             messages.forEach((message, index) => {
@@ -202,14 +189,9 @@ async function handleVsummaryCommand(channel, user) {
                     bot.say(channel, message);
                 }, 1000 * index);
             });
-        } else {
-            bot.say(channel, response);
         }
-    } catch (error) {
-        console.error('Error handling !vsummary command:', error);
-        // Handle error
-    }
-}
+  }
+});
 
 app.ws('/check-for-updates', (ws, req) => {
     ws.on('message', (message) => {
