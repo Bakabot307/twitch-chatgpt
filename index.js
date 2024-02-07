@@ -325,7 +325,10 @@ async function fetchData() {
     const response = await fetch('https://api.henrikdev.xyz/valorant/v1/by-puuid/lifetime/matches/ap/1c663650-bf7e-562a-bf99-b486461227b7?mode=competitive&page=1&size=10');
     const data = await response.json();
 
-    const playerName = `${data.name}#${data.tag}`;
+    const response2 = await fetch('https://api.kyroskoh.xyz/valorant/v1/mmr/ap/bakabot/7117?show=combo&display=0');
+    const data2 = await response2.data; // Assuming the response is already in string format
+
+    const playerName = `${data.name}`;
     const matches = data.data.map(match => {
       const headshotRate = calculateHeadshotRate(match.stats.shots);
       const won = (match.stats.team === 'Blue' && match.teams.blue > match.teams.red) ||
@@ -344,7 +347,7 @@ async function fetchData() {
       ].join(',');
     });
 
-    const resultString = `Player: ${playerName}\nmap,team,score,kills,deaths,assists,headshotRate,damageMade,damageReceived,won\n${matches.join('\n')}`;
+    const resultString = `Player: ${playerName}-Rank: ${data2}\nmap,team,score,kills,deaths,assists,headshotRate,damageMade,damageReceived,won\n${matches.join('\n')}`;
     
     return resultString;
   } catch (error) {
