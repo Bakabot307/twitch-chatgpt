@@ -170,9 +170,22 @@ bot.onMessage(async (channel, user, message, self) => {
             }
         }
     }
-  if (message.trim().toLowerCase().startsWith('!vsummary')) {
-          handleVsummaryCommand(channel, user);
-  }
+ let lastVsummaryCommandTime = 0; // Initialize the last command time
+
+if (message.trim().toLowerCase().startsWith('!vsummary')) {
+    const currentTime = Date.now();
+    const cooldownDuration = 30000; // 30 seconds in milliseconds
+
+    if (currentTime - lastVsummaryCommandTime >= cooldownDuration) {
+        // Command is not on cooldown, execute it
+        handleVsummaryCommand(channel, user);
+        
+        // Update the last command time
+        lastVsummaryCommandTime = currentTime;
+    } else {
+        return;
+    }
+}
 });
 
 async function handleVsummaryCommand(channel, user) {
