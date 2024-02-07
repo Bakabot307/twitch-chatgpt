@@ -363,7 +363,7 @@ async function fetchData() {
         headshotRate + '%',
         match.stats.damage.made,
         match.stats.damage.received,
-        won ? 'Yes' : 'No'
+        won ? 'Won' : 'Lost'
       ].join(',');
     });
 
