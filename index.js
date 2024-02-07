@@ -1,7 +1,7 @@
 import express from 'express';
 import fs from 'fs';
 import ws from 'ws';
-import axios = require('axios');
+import axios from 'axios';
 
 import expressWs from 'express-ws';
 
