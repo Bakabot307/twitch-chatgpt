@@ -195,7 +195,7 @@ async function handleVsummaryCommand(channel, user) {
 
         let text;
         if (SEND_USERNAME) {
-            text = "this is the summary of the last 10 games of bakabot:" + summary
+            text = "this is the summary of the last 10 games of " + summary
         }
         console.log(text);
         const response = await openai_ops_valorant.make_openai_call(text);
@@ -366,7 +366,7 @@ async function fetchData() {
       ].join(',');
     });
 
-    const resultString = `Player: ${playerName}-Rank: ${data2}\nmap,AverageScorePerRound,K/D/A,headshotRate,damageMade,damageReceived,won\n${matches.join('\n')}`;
+    const resultString = `${playerName}-Rank: ${data2}\nmap,AverageScorePerRound,K/D/A,headshotRate,damageMade,damageReceived,won\n${matches.join('\n')}`;
     
     return resultString;
   } catch (error) {
