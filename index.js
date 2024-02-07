@@ -183,7 +183,7 @@ async function handleVsummaryCommand(channel, user) {
 
         let text;
         if (SEND_USERNAME) {
-            text = "Message from user " + user.username + " asking for valorant summary from bakabot: " + summary
+            text = "Message from user " + user.username + " asking for  bakabot's valorant summary : " + summary
         }
         console.log(text);
         const response = await openai_ops_valorant.make_openai_call(text);
