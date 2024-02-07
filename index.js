@@ -177,7 +177,7 @@ bot.onMessage(async (channel, user, message, self) => {
 
     if (message.toLowerCase() === '!vsummary') {
     // Fetch Valorant summary data openai_ops_valorant
-    const summary = await getValorantSummary();
+    const summary = await fetchData();
     let text;
         if (SEND_USERNAME) {
             text = "Message from user " + user.username + " asking for valorant summary from bakabot: " + summary
@@ -312,9 +312,12 @@ function calculateHeadshotRate(shots) {
 }
 
 // Make a GET request to the API
-fetch('https://api.henrikdev.xyz/valorant/v1/by-puuid/lifetime/matches/ap/1c663650-bf7e-562a-bf99-b486461227b7?mode=competitive&page=1&size=10')
-  .then(response => response.json())
-  .then(data => {
+// Make a GET request to the API
+async function fetchData() {
+  try {
+    const response = await fetch('https://api.henrikdev.xyz/valorant/v1/by-puuid/lifetime/matches/ap/1c663650-bf7e-562a-bf99-b486461227b7?mode=competitive&page=1&size=10');
+    const data = await response.json();
+
     const playerName = `${data.name}#${data.tag}`;
     const matches = data.data.map(match => {
       const headshotRate = calculateHeadshotRate(match.stats.shots);
@@ -337,10 +340,11 @@ fetch('https://api.henrikdev.xyz/valorant/v1/by-puuid/lifetime/matches/ap/1c6636
     console.log("Player:", playerName);
     console.log("map,team,score,kills,deaths,assists,headshotRate,damageMade,damageReceived,won");
     matches.forEach(match => console.log(match));
-  })
-  .catch(error => {
+  } catch (error) {
     console.error('Error fetching data:', error);
-  });
+  }
+}
+
 
 
 
