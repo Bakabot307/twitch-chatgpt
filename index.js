@@ -170,7 +170,7 @@ bot.onMessage(async (channel, user, message, self) => {
             }
         }
     }
-    if (message.toLowerCase() === '!vsummary') {
+   if (message.trim().toLowerCase() === '!vsummary') {
     // Fetch Valorant summary data openai_ops_valorant
           handleVsummaryCommand(channel, user);
   }
