@@ -196,7 +196,7 @@ async function handleVsummaryCommand(channel, user) {
 
         let text;
         if (SEND_USERNAME) {
-            text = "this is the summary of the last 10 games of " + summary
+            text = "this is the summary of the last game of " + summary
         }
         console.log(text);
         const response = await make_openai_call(file_context_valorant, text, MODEL_NAME);
@@ -335,7 +335,7 @@ function calculateHeadshotRate(shots) {
 // Make a GET request to the API
 async function fetchData() {
   try {
-    const response = await fetch('https://api.henrikdev.xyz/valorant/v1/by-puuid/lifetime/matches/ap/1c663650-bf7e-562a-bf99-b486461227b7?mode=competitive&page=1&size=10');
+    const response = await fetch('https://api.henrikdev.xyz/valorant/v1/by-puuid/lifetime/matches/ap/1c663650-bf7e-562a-bf99-b486461227b7?mode=competitive&page=1&size=1');
     const data = await response.json();
 
     const response2 = await fetch('https://api.kyroskoh.xyz/valorant/v1/mmr/ap/bakabot/7117?show=combo&display=0');
@@ -356,18 +356,25 @@ async function fetchData() {
       const assists = match.stats.assists;
       const kdaRatio = `${kills}/${deaths}/${assists}`; // Format as K/D/A
 
-      return [
-        match.meta.map.name,
-        avgScorePerRound.toFixed(2), // Round to 2 decimal places
-        kdaRatio, // Replace individual K/D/A with combined K/D/A ratio
-        headshotRate + '%',
-        match.stats.damage.made,
-        match.stats.damage.received,
-        won ? 'Won' : 'Lost'
-      ].join(',');
+     return {
+  map: match.meta.map.name,
+  averageScorePerRound: avgScorePerRound.toFixed(2),
+  kda: kdaRatio,
+  shots: match.stats.shots, // Include the shot head/body/leg stats
+  headshotRate: headshotRate + '%',
+  damageMade: match.stats.damage.made,
+  damageReceived: match.stats.damage.received,
+  totalRoundsPlayed: totalRoundsPlayed,
+  result: won ? 'Won' : 'Lost',
+  
+};
+
     });
 
-    const resultString = `${playerName}-Rank: ${data2}\nmap,AverageScorePerRound,K/D/A,headshotRate,damageMade,damageReceived,won\n${matches.join('\n')}`;
+const resultString = `${playerName}-Rank: ${data2}\n${matches.map(match => 
+  `map:${match.map},AverageScorePerRound:${match.averageScorePerRound},K/D/A:${match.kda},ShotHead:${match.shots.head},ShotBody:${match.shots.body},ShotLeg:${match.shots.leg},HeadshotRate:${match.headshotRate},DamageMade:${match.damageMade},DamageReceived:${match.damageReceived},TotalRoundsPlayed:${match.totalRoundsPlayed},Result:${match.result}`
+).join('\n')}`;
+
     
     return resultString;
   } catch (error) {
