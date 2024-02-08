@@ -359,8 +359,7 @@ async function fetchData() {
      return {
   map: match.meta.map.name,
   averageScorePerRound: avgScorePerRound.toFixed(2),
-  kda: kdaRatio,
-  shots: match.stats.shots, // Include the shot head/body/leg stats
+  kda: kdaRatio, 
   headshotRate: headshotRate + '%',
   damageMade: match.stats.damage.made,
   damageReceived: match.stats.damage.received,
@@ -372,7 +371,7 @@ async function fetchData() {
     });
 
 const resultString = `${playerName}-Rank: ${data2}\n${matches.map(match => 
-  `map:${match.map},AverageScorePerRound:${match.averageScorePerRound},K/D/A:${match.kda},ShotHead:${match.shots.head},ShotBody:${match.shots.body},ShotLeg:${match.shots.leg},HeadshotRate:${match.headshotRate},DamageMade:${match.damageMade},DamageReceived:${match.damageReceived},TotalRoundsPlayed:${match.totalRoundsPlayed},Result:${match.result}`
+  `map:${match.map},AverageScorePerRound:${match.averageScorePerRound},K/D/A:${match.kda},HeadshotRate:${match.headshotRate},DamageMade:${match.damageMade},DamageReceived:${match.damageReceived},TotalRoundsPlayed:${match.totalRoundsPlayed},Result:${match.result}`
 ).join('\n')}`;
 
     
