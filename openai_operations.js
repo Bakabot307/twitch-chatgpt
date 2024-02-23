@@ -44,7 +44,6 @@ export class OpenAIOperations {
                 let agent_response = response.choices[0].message.content;
                 console.log(`Agent Response: ${agent_response}`);
                 this.messages.push({role: "assistant", content: agent_response});
-                console.log(this.messages)
                 return agent_response;
             } else {
                 // Handle the case when no choices are returned
